@@ -35,12 +35,11 @@ def Adding_subject(grades):
         print(f"'{subject}' added successfully!")
 
 
-def main(grades):
+def main():
     grades = Loading_file()
     while True:
         print("\nGrade Tracker Menu:")
         print("1. Add Subject")
-        print(grades)
         choice = input("Enter your choice: ")
 
         if choice == "1":
