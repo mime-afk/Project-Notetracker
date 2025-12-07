@@ -26,13 +26,23 @@ def save_grades(grades):
 
 
 def Adding_subject(grades):
-    subject = input("enter subject")
+    subject = input("Enter subject: ")
     if subject in grades:
-        print(f"{subject}""already exist")
+        print(f"{subject} already exist")
     else:
         grades[subject] = []
         save_grades(grades)
-        print(f"'{subject}' added successfully!")
+        print(f"{subject} added successfully!")
+
+
+def remove_subject(grades):
+    subject = input("Enter subject you want to remove: ")
+    if subject in grades:
+        del grades[subject]
+        save_grades(grades)
+        print(f"{subject} removed")
+    else:
+        print(f"{subject} not found")
 
 
 def main():
