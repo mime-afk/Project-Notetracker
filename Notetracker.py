@@ -1,130 +1,119 @@
-import os
+import os  # This lets us check if the file exists
 
-# file to store data
-file_Grades = "Subject.txt"
+# The file where we save the grades
+GRADES_FILE = "subjects.txt"
 
-
-def Loading_file():
-    grades = {}
-    if os.path.exists(file_Grades):
-        with open(file_Grades, "r") as file:
-            for line in file:
-                line = line.strip()
-                if line:
-                    parts = line.split(",")
-                    subject = parts[0]
-                    grades[subject] = [float(grade) for grade in parts[1:]]
-    return grades
-
+def load_grades():
+    """Load grades from the text file."""
+    grades = {}  # This dictionary will store subjects and grades
+    if os.path.exists(GRADES_FILE):  # Check if the file exists
+        with open(GRADES_FILE, "r") as file:  # Open the file for reading
+            for line in file:  # Read each line in the file
+                line = line.strip()  # Remove extra spaces
+                if line:  # If the line is not empty
+                    parts = line.split(",")  # Split the line into parts
+                    subject = parts[0]  # The first part is the subject name
+                    subject_grades = []  # List to store grades for this subject
+                    for grade in parts[1:]:  # Loop through the rest (the grades)
+                        if grade:
+                            try:
+                                 subject_grades.append(float(grade))  # Add each grade to the list
+                            except ValueError: # Skip invalid grades
+                                continue
+                    grades[subject] = subject_grades  # Save the subject and grades
+    return grades  # Return the dictionary with all subjects and grades
 
 def save_grades(grades):
     """Save grades to the text file."""
-    with open(file_Grades, "w") as file:
-        for subject, grade_list in grades.items():
-            line = f"{subject},{','.join(map(str, grade_list))}\n"
-            file.write(line)
+    with open(GRADES_FILE, "w") as file:  # Open the file for writing
+        for subject, subject_grades in grades.items():  # Loop through subjects and grades
+            # Write the subject and grades as a line in the file
+            file.write(f"{subject},{','.join(map(str, subject_grades))}\n")
 
-def add_grade(grades):
-    subject = input("Für welches Fach möchtest du eine Note eintragen? ")
-
-    if subject not in grades:
-        print(f"Das Fach '{subject}' gibt es noch nicht.")
-        return  # Funktion hier beenden
-
-    grade_input = input("Welche Note möchtest du eintragen? (z.B. 5.5) ")
-
-    try:
-        grade = float(grade_input)  # Text -> Zahl (Kommazahl)
-    except ValueError:
-        print("Das war keine gültige Zahl.")
-        return
-
-    grades[subject].append(grade)  # Note zur Liste hinzufügen
-    save_grades(grades)  # in Datei speichern
-    print(f"Note {grade} wurde zu '{subject}' hinzugefügt.")
-
-
-def delete_grade(grades):
-    subject = input("Aus welchem Fach möchtest du eine Note löschen? ")
-
-    if subject not in grades:
-        print(f"Das Fach '{subject}' gibt es nicht.")
-        return
-
-    if not grades[subject]:
-        print(f"Im Fach '{subject}' gibt es noch keine Noten.")
-        return
-
-    print(f"Noten in '{subject}':")
-    for index, grade in enumerate(grades[subject], start=1):
-        print(f"{index}. {grade}")
-
-    choice_input = input("Welche Note (Nummer) möchtest du löschen? ")
-
-    try:
-        choice = int(choice_input)
-    except ValueError:
-        print("Das war keine gültige Zahl.")
-        return
-
-    if choice < 1 or choice > len(grades[subject]):
-        print("Diese Nummer gibt es nicht.")
-        return
-
-    removed = grades[subject].pop(choice - 1)  # -1 wegen 0-Index
-    save_grades(grades)
-    print(f"Note {removed} wurde aus '{subject}' gelöscht.")
-    
-
-def Adding_subject(grades):
-    subject = input("Enter subject: ")
-    if subject in grades:
-        print(f"{subject} already exist")
+def add_subject(grades):
+    """Add a new subject."""
+    subject = input("Enter the subject name: ")
+    if subject in grades:  # Check if the subject already exists
+        print(f"'{subject}' already exists!")
     else:
-        grades[subject] = []
-        save_grades(grades)
-        print(f"{subject} added successfully!")
-
+        grades[subject] = []  # Add the subject with an empty list of grades
+        save_grades(grades)  # Save the changes to the file
+        print(f"'{subject}' added successfully!")
 
 def remove_subject(grades):
-    subject = input("Enter subject you want to remove: ")
-    if subject in grades:
-        del grades[subject]
-        save_grades(grades)
-        print(f"{subject} removed")
+    """Remove a Subject."""
+    print("Remove a Subject:")
+    for subject, subject_grades in grades.items():
+        print(f"{subject}")
+    subject = input("Enter the subject name to remove: ")
+    if subject in grades:  # Check if the subject exists
+        del grades[subject]  # Remove the subject
+        save_grades(grades)  # Save the changes
+        print(f"'{subject}' removed successfully!")
     else:
-        print(f"{subject} not found")
+        print(f"'{subject}' not found!")
 
-def show_grades(grades):
-    if not grades:
-        print("Es sind noch keine Fächer vorhanden.")
-        return
+def add_grade(grades):
+    """Add a grade to a subject."""
+    subject = input("Enter the subject name: ")
+    if subject in grades:  # Check if the subject exists
+        try:
+            grade = float(input("Enter the grade: "))  # Ask for the grade
+            grades[subject].append(grade)  # Add the grade to the subject
+            save_grades(grades)  # Save the changes
+            print(f"Grade {grade} added to '{subject}'!")
+        except ValueError:  # If the grade is not a number
+            print("Invalid grade! Please enter a number.")
+    else:
+        print(f"'{subject}' not found!")
 
-    for subject, grade_list in grades.items():
-        print(f"\nFach: {subject}")
 
-        if not grade_list:
-            print("  Noch keine Noten eingetragen.")
+def view_grades(grades):
+    """View all subjects and grades."""
+    while True:  # Loop until the user chooses to go back
+        if not grades:  # If there are no subjects
+            print("No subjects or grades found!")
         else:
-            # Noten anzeigen
-            print("  Noten:", ", ".join(map(str, grade_list)))
+            for subject, subject_grades in grades.items():  # Loop through subjects and grades
+                if subject_grades:  # If there are grades for the subject
+                    average = sum(subject_grades) / len(subject_grades)  # Calculate the average
+                    print(f"{subject}: {subject_grades} (Average: {average:.2f})")
+                else:
+                    print(f"{subject}: No grades yet.")
 
-            # Durchschnitt berechnen
-            average = sum(grade_list) / len(grade_list)
-            print(f"  Durchschnitt: {average:.2f}")
+        # Ask the user if they want to go back
+        print("\nPress '1' to go back to the main menu.")
+        choice = input("Your choice: ").strip().lower()
+        if choice == '1':
+            break  # Exit the loop and return to the main menu
+        else:
+            print("Invalid choice! Press '1' to go back.")
+
 
 def main():
-    grades = Loading_file()
-    while True:
+    """Main function to run the grade tracker."""
+    grades = load_grades()  # Load grades from the file
+    while True:  # Loop forever until the user exits
         print("\nGrade Tracker Menu:")
         print("1. Add Subject")
-        choice = input("Enter your choice: ")
-
+        print("2. Remove Subject")
+        print("3. Add Grade")
+        print("4. View Grades")
+        print("5. Exit")
+        choice = input("Enter your choice: ")  # Ask for the user's choice
         if choice == "1":
-            Adding_subject(grades)
+            add_subject(grades)
+        elif choice == "2":
+            remove_subject(grades)
+        elif choice == "3":
+            add_grade(grades)
+        elif choice == "4":
+            view_grades(grades)
+        elif choice == "5":
+            print("Goodbye!")
+            break  # Exit the loop and end the program
         else:
             print("Invalid choice! Please try again.")
 
-
 if __name__ == "__main__":
-    main()
+    main()  # Run the main function
