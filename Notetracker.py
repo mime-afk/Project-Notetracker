@@ -42,7 +42,7 @@ def add_subject(grades):
 
 def remove_subject(grades):
     """Remove a Subject."""
-    print("Remove a Subject:")
+    print("\nRemove a Subject:")
     for subject, subject_grades in grades.items():
         print(f"{subject}")
     subject = input("Enter the subject name to remove: ")
@@ -55,6 +55,7 @@ def remove_subject(grades):
 
 def add_grade(grades):
     """Add a grade to a subject."""
+    print("\nAdd grade:")
     subject = input("Enter the subject name: ")
     if subject in grades:  # Check if the subject exists
         try:
