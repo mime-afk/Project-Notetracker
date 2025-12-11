@@ -32,6 +32,7 @@ def save_grades(grades):
 
 def add_subject(grades):
     """Add a new subject."""
+    print("\nAdd subject:")
     subject = input("Enter the subject name: ")
     if subject in grades:  # Check if the subject already exists
         print(f"'{subject}' already exists!")
@@ -72,6 +73,7 @@ def add_grade(grades):
 def view_grades(grades):
     """View all subjects and grades."""
     while True:  # Loop until the user chooses to go back
+        print("\nAdd grade:")
         if not grades:  # If there are no subjects
             print("No subjects or grades found!")
         else:
