@@ -5,7 +5,7 @@ GRADES_FILE = "subjects.txt"
 
 
 def pause():
-    """Pause execution and wait for the user to press Enter."""
+    """Pause for userfrindlyness."""
     input("\nPress Enter to go back to the main menu...")
 
 
@@ -13,7 +13,7 @@ def load_grades():
     """Load grades from the file. """
     grades = {}
     if os.path.exists(GRADES_FILE):
-        # Open the file in read mode and load the data
+        # open file or creat it
         with open(GRADES_FILE, "r") as file:
             for line in file:
                 line = line.strip()
@@ -22,7 +22,7 @@ def load_grades():
                     subject_name = parts[0]
                     subject_grades = []
                     for grade_text in parts[1:]:
-                        if grade_text:  # Skip empty grade entries
+                        if grade_text:  # Skips empty grades
                             try:
                                 subject_grades.append(float(grade_text))
                             except ValueError:
@@ -34,10 +34,10 @@ def load_grades():
 
 def save_grades(grades):
     """ Save grades to the file."""
-    # Open the file in write mode and save the data
+    # write subject and grade in to the file
     with open(GRADES_FILE, "w") as file:
         for subject_name, subject_grades in grades.items():
-            # Write subject name followed by grades, separated by commas
+            # Write subject and grades, separated with commas
             file.write(f"{subject_name},{','.join(map(str, subject_grades))}\n")
 
 def add_subject(grades):
@@ -49,7 +49,7 @@ def add_subject(grades):
     elif subject_name in grades:
         print("This subject already exists.")
     else:
-        # Add the new subject with an empty list of grades
+        # Add the new subject
         grades[subject_name] = []
         save_grades(grades)
         print("Subject added.")
@@ -79,7 +79,7 @@ def remove_subject(grades):
     try:
         choice = int(input("Type the number of the subject to remove: ").strip())
         if 1 <= choice <= len(subject_list):
-            # Remove the selected subject
+            # Remove the subject
             subject_to_remove = subject_list[choice - 1]
             del grades[subject_to_remove]
             save_grades(grades)
@@ -105,7 +105,7 @@ def add_grade(grades):
             subject_name = subject_list[choice - 1]
             while True:
                 try:
-                    # Add the grade to the selected subject
+                    # Add the grade to subject
                     grade = float(input("Enter the grade: ").strip())
                     grades[subject_name].append(grade)
                     save_grades(grades)
@@ -131,9 +131,9 @@ def view_grades(grades):
         if not subject_grades:
             print(f"{subject_name}: No grades yet.")
         else:
-            # Calculate and display the average grade
+            # display subject, grades and average
             average = sum(subject_grades) / len(subject_grades)
-            print(f"{subject_name}: {subject_grades} (Average: {average:.2f})")
+            print(f"{subject_name}: {subject_grades} (average: {average:.2f})")
     pause()
 
 def main():
