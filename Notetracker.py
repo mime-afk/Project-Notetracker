@@ -19,47 +19,48 @@ def load_grades():
             line = line.strip()
             if line != "":
                 parts = line.split(",")
-                subject = parts[0]
+                subject_name = parts[0]
                 subject_grades = []
 
-                for g in parts[1:]:
-                    if g != "":
+                for grade_text in parts[1:]:
+                    if grade_text != "":
                         try:
-                            subject_grades.append(float(g))
+                            subject_grades.append(float(grade_text))
                         except ValueError:
                             pass
 
-                grades[subject] = subject_grades
+                grades[subject_name] = subject_grades
 
     return grades
 
 
 def save_grades(grades):
     file = open(GRADES_FILE, "w")
-    for subject in grades:
-        grade_list = grades[subject]
-        file.write(subject)
 
-        for g in grade_list:
-            file.write("," + str(g))
+    for subject_name in grades:
+        file.write(subject_name)
+
+        for grade in grades[subject_name]:
+            file.write("," + str(grade))
 
         file.write("\n")
+
     file.close()
 
 
 def add_subject(grades):
     print("\nAdd Subject")
-    subject = input("Enter the subject name: ").strip()
+    subject_name = input("Enter the subject name: ").strip()
 
-    if subject == "":
+    if subject_name == "":
         print("Subject name cannot be empty.")
         pause()
         return
 
-    if subject in grades:
+    if subject_name in grades:
         print("This subject already exists.")
     else:
-        grades[subject] = []
+        grades[subject_name] = []
         save_grades(grades)
         print("Subject added.")
 
@@ -67,26 +68,26 @@ def add_subject(grades):
 
 
 def show_subjects(grades):
-    subjects = list(grades.keys())
+    subject_list = list(grades.keys())
 
-    if len(subjects) == 0:
+    if len(subject_list) == 0:
         print("No subjects found.")
-        return subjects
+        return subject_list
 
     print("\nSubjects:")
-    i = 1
-    for s in subjects:
-        print(str(i) + ". " + s)
-        i += 1
+    index = 1
+    for subject_name in subject_list:
+        print(str(index) + ". " + subject_name)
+        index += 1
 
-    return subjects
+    return subject_list
 
 
 def remove_subject(grades):
     print("\nRemove Subject")
-    subjects = show_subjects(grades)
+    subject_list = show_subjects(grades)
 
-    if len(subjects) == 0:
+    if len(subject_list) == 0:
         pause()
         return
 
@@ -97,14 +98,14 @@ def remove_subject(grades):
         pause()
         return
 
-    choice_num = int(choice)
+    choice_number = int(choice)
 
-    if choice_num < 1 or choice_num > len(subjects):
+    if choice_number < 1 or choice_number > len(subject_list):
         print("Number out of range.")
         pause()
         return
 
-    subject_to_remove = subjects[choice_num - 1]
+    subject_to_remove = subject_list[choice_number - 1]
     del grades[subject_to_remove]
     save_grades(grades)
     print("Subject removed: " + subject_to_remove)
@@ -114,9 +115,9 @@ def remove_subject(grades):
 
 def add_grade(grades):
     print("\nAdd Grade")
-    subjects = show_subjects(grades)
+    subject_list = show_subjects(grades)
 
-    if len(subjects) == 0:
+    if len(subject_list) == 0:
         pause()
         return
 
@@ -127,22 +128,22 @@ def add_grade(grades):
         pause()
         return
 
-    choice_num = int(choice)
+    choice_number = int(choice)
 
-    if choice_num < 1 or choice_num > len(subjects):
+    if choice_number < 1 or choice_number > len(subject_list):
         print("Number out of range.")
         pause()
         return
 
-    subject = subjects[choice_num - 1]
+    subject_name = subject_list[choice_number - 1]
 
     while True:
-        grade_text = input("Enter the grade: ").strip()
+        grade_input = input("Enter the grade: ").strip()
         try:
-            grade = float(grade_text)
-            grades[subject].append(grade)
+            grade = float(grade_input)
+            grades[subject_name].append(grade)
             save_grades(grades)
-            print("Grade added to " + subject + ".")
+            print("Grade added to " + subject_name)
             break
         except ValueError:
             print("Invalid grade. Please enter a number.")
@@ -158,13 +159,14 @@ def view_grades(grades):
         pause()
         return
 
-    for subject in grades:
-        subject_grades = grades[subject]
+    for subject_name in grades:
+        subject_grades = grades[subject_name]
+
         if len(subject_grades) == 0:
-            print(subject + ": No grades yet.")
+            print(subject_name + ": No grades yet.")
         else:
             average = sum(subject_grades) / len(subject_grades)
-            print(subject + ": " + str(subject_grades) + " (Average: " + f"{average:.2f}" + ")")
+            print(subject_name + ": " + str(subject_grades) + " (Average: " + f"{average:.2f}" + ")")
 
     pause()
 
@@ -199,3 +201,4 @@ def main():
 
 
 main()
+
