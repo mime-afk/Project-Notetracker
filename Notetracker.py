@@ -37,7 +37,7 @@ def save_grades(grades):
     # write subject and grade in to the file
     with open(GRADES_FILE, "w") as file:
         for subject_name, subject_grades in grades.items():
-            # Write subject and grades, separated with commas
+            # Write subject and grades separated with commas
             file.write(f"{subject_name},{','.join(map(str, subject_grades))}\n")
 
 def add_subject(grades):
