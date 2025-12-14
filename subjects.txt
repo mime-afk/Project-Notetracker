@@ -1,6 +1,0 @@
-Mathe,4.24532
-4,
-3,
-Deutsch,5.0
-Test,
-fas,
